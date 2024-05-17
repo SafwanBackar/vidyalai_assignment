@@ -57,19 +57,41 @@ const Button = styled.button(() => ({
 
 const PrevButton = styled(Button)`
   left: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const NextButton = styled(Button)`
   right: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 `;
+
+const PostUser = styled.div(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '10px',
+}));
+
+const PostUserProfileImg = styled.div(() => ({
+  textAlign: 'center',
+  backgroundColor: 'orange',
+  padding: '15px',
+  borderRadius: '50%',
+}));
+
+const PostUserDetail = styled.div(() => ({}));
 
 const Post = ({ post }) => {
   const carouselRef = useRef(null);
-
+  const nameSplit = post.user.name.split(' ');
+  const nameInitials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
   const handleNextClick = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
-        left: 50,
+        left: 300,
         behavior: 'smooth',
       });
     }
@@ -78,7 +100,7 @@ const Post = ({ post }) => {
   const handlePrevClick = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
-        left: -70,
+        left: -300,
         behavior: 'smooth',
       });
     }
@@ -86,6 +108,15 @@ const Post = ({ post }) => {
 
   return (
     <PostContainer>
+      <PostUser>
+        <PostUserProfileImg>
+          <h3>{nameInitials}</h3>
+        </PostUserProfileImg>
+        <PostUserDetail>
+          <h3>{post.user.name}</h3>
+          <p>{post.user.email}</p>
+        </PostUserDetail>
+      </PostUser>
       <CarouselContainer>
         <Carousel ref={carouselRef}>
           {post.images.map((image, index) => (
@@ -108,9 +139,11 @@ const Post = ({ post }) => {
 Post.propTypes = {
   post: PropTypes.shape({
     content: PropTypes.any,
-    images: PropTypes.shape({
-      map: PropTypes.func,
-    }),
+    images: PropTypes.arrayOf(
+      PropTypes.shape({
+        url: PropTypes.string.isRequired
+      })
+    ),
     title: PropTypes.any,
   }),
 };
